@@ -82,6 +82,7 @@ get_message(#mqtt_request{type = connect, clean_start = CleanStart,
                           will_qos = WillQos, will_msg = WillMsg,
                           will_retain = WillRetain, username = UserName, password = Password},
             #state_rcv{session = MqttSession}) ->
+    io:format("Connecting.....", []),
     ClientId = ["tsung-", ts_utils:randombinstr(10)],
     PublishOptions = mqtt_frame:set_publish_options([{qos, WillQos},
                                                      {retain, WillRetain}]),
@@ -135,7 +136,11 @@ get_message(#mqtt_request{type = unsubscribe, topic = Topic},
     Arg = [#sub{topic = Topic}],
     MsgId = NewMqttSession#mqtt_session.curr_id,
     Message = #mqtt{id = MsgId, type = ?UNSUBSCRIBE, arg = Arg},
-    {mqtt_frame:encode(Message),NewMqttSession#mqtt_session{wait = ?UNSUBACK}}.
+    {mqtt_frame:encode(Message),NewMqttSession#mqtt_session{wait = ?UNSUBACK}};
+get_message(#mqtt_request{type = waitForMessage},
+            #state_rcv{session = MqttSession = #mqtt_session{curr_id = Id}}) ->
+    io:format("waitForMessage", []),
+    {<< >>,MqttSession#mqtt_session{wait = ?PUBLISH}}.
 
 %%----------------------------------------------------------------------
 %% Function: parse/2

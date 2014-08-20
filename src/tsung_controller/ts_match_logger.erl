@@ -38,7 +38,7 @@
 -include("ts_config.hrl").
 
 -define(DELAYED_WRITE_SIZE,524288). % 512KB
--define(DELAYED_WRITE_DELAY,5000).  % 5 sec
+-define(DELAYED_WRITE_DELAY,50).  % 5 sec
 
 %% External exports, API
 -export([start/1, stop/0, add/1 ]).
